@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sgdev HUB | Shubhomoy - PRO</title>
+    
+    <!-- Favicon setting -->
+    <link rel="icon" type="image/x-icon" href="m.ico">
+
+    <style>
+        /* Base Styling & Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            cursor: none !important; /* Force custom cursor on every element */
+        }
+
+        html, body {
+            min-height: 100vh;
+            width: 100%;
+            background-color: #050505;
+            color: #ffffff;
+        }
+
+        body {
+            overflow-x: hidden;
+            overflow-y: auto; /* Scrollbar enabled */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 0;
+            opacity: 0;
+            animation: pageFadeIn 1.5s ease-out forwards;
+        }
+
+        /* Page Entrance Animation */
+        @keyframes pageFadeIn {
+            to { opacity: 1; }
+        }
+
+        /* ==========================================
+           CUSTOM GLOWING SCROLLBAR (PRO DARK THEME)
+           ========================================== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #050505;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #00ffff, #ff00ff, #00ff00);
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #ff00ff, #00ffff);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+        }
+
+        /* BACKGROUND SETUP - Uses a.webp */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(15,15,25,0.75) 100%),
+                url('a.webp') no-repeat center center/cover;
+            z-index: -2;
+            transition: transform 0.8s ease-out;
+            will-change: transform;
+        }
+
+        body:hover .background-container {
+            transform: scale(1.03);
+        }
+
+        /* JS PARTICLE & CURSOR CANVAS - Always Stay on Top for Cursor Visibility */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999; /* Highest priority so cursor never disappears */
+            pointer-events: none; /* Mouse passes through to click links */
+        }
+
+        /* MAIN PROFILE CARD */
+        .profile-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            width: 90%;
+            max-width: 520px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.1), 0 0 20px rgba(255, 0, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(30px);
+            animation: cardEntrance 1.2s ease-out forwards;
+            animation-delay: 0.3s;
+            margin: auto;
+        }
+
+        @keyframes cardEntrance {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Neon Corner Glows */
+        .profile-card::before, .profile-card::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.5;
+            z-index: -1;
+            animation: glowPulse 8s infinite alternate;
+        }
+
+        .profile-card::before {
+            top: -15px;
+            left: -15px;
+            background: cyan;
+        }
+
+        .profile-card::after {
+            bottom: -15px;
+            right: -15px;
+            background: magenta;
+            animation-delay: 4s;
+        }
+
+        @keyframes glowPulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            100% { transform: scale(1.6); opacity: 0.6; }
+        }
+
+        /* PROFILE LOGO */
+        .profile-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0,0,0,0.3);
+            margin: 0 auto 20px auto;
+            display: block;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            animation: logoSpawn 1s ease-out forwards;
+            animation-delay: 0.8s;
+            opacity: 0;
+        }
+
+        @keyframes logoSpawn {
+            from { opacity: 0; transform: scale(0.5) rotate(-45deg); }
+            to { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        .profile-card:hover .profile-logo {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 0 35px rgba(255, 0, 255, 0.4);
+        }
+
+        /* HEADER & TEXT */
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .username {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            margin-bottom: 8px;
+        }
+
+        .email {
+            font-size: 1rem;
+            color: #b0b0b0;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .email a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .email a:hover {
+            color: cyan;
+        }
+
+        .subtext {
+            font-size: 1.05rem;
+            color: #e0e0e0;
+            max-width: 90%;
+            margin: 0 auto;
+            line-height: 1.5;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        /* SECTION HEADINGS */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #00ffff;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .section-title::before, .section-title::after {
+            content: '';
+            height: 1px;
+            width: 30px;
+            background: rgba(0, 255, 255, 0.4);
+        }
+
+        /* LINKS CONTAINER */
+        .links-container {
+            display: grid;
+            gap: 14px;
+        }
+
+        /* PRO BUTTONS */
+        .link-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(10, 10, 15, 0.7);
+            border-radius: 14px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            opacity: 0;
+            animation: btnSlideIn 0.8s ease-out forwards;
+        }
+
+        /* Sequential Delays */
+        .link-btn:nth-child(1) { animation-delay: 1.0s; }
+        .link-btn:nth-child(2) { animation-delay: 1.1s; }
+        .link-btn:nth-child(3) { animation-delay: 1.2s; }
+        .link-btn:nth-child(4) { animation-delay: 1.3s; }
+        .link-btn:nth-child(5) { animation-delay: 1.4s; }
+        .link-btn:nth-child(6) { animation-delay: 1.5s; }
+        .link-btn:nth-child(7) { animation-delay: 1.6s; }
+        .link-btn:nth-child(8) { animation-delay: 1.7s; }
+        .link-btn:nth-child(9) { animation-delay: 1.8s; }
+        .link-btn:nth-child(10) { animation-delay: 1.9s; }
+        .link-btn:nth-child(11) { animation-delay: 2.0s; }
+
+        @keyframes btnSlideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .link-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 14px;
+            padding: 2px;
+            background: linear-gradient(90deg, cyan, magenta, green, cyan);
+            background-size: 300% 100%;
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .link-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.1);
+            background: rgba(25, 25, 35, 0.9);
+        }
+
+        .link-btn:hover::before {
+            opacity: 1;
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            100% { background-position: 100% 0; }
+        }
+
+        /* WhatsApp Pulse Effect */
+        .link-btn.whatsapp-btn {
+            background: rgba(18, 140, 126, 0.2);
+            border-color: rgba(37, 211, 102, 0.2);
+            animation: btnSlideIn 0.8s ease-out forwards, whatsappPulse 3s infinite;
+            animation-delay: 1.0s, 4s;
+        }
+
+        .link-btn.whatsapp-btn:hover {
+            background: rgba(37, 211, 102, 0.3);
+        }
+
+        @keyframes whatsappPulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        /* Download Buttons Special Glow */
+        .link-btn.dl-btn {
+            background: rgba(0, 255, 255, 0.05);
+            border-color: rgba(0, 255, 255, 0.2);
+        }
+
+        .link-btn.dl-btn:hover {
+            background: rgba(0, 255, 255, 0.15);
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Background Image -->
+    <div class="background-container"></div>
+
+    <!-- Particle & Custom Cursor Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Main Card -->
+    <main class="profile-card">
+        
+        <!-- Profile Logo -->
+        <img src="s.png" alt="sgdev Logo" class="profile-logo">
+
+        <div class="header">
+            <h1 class="username">sgdev</h1>
+            <p class="email"><a href="mailto:sgdev@netc.fr">sgdev@netc.fr</a></p>
+            <p class="subtext">"12-year-old Full-Stack Developer | Building AI web apps with HTML & APIs | Deployed on Vercel"</p>
+        </div>
+
+        <!-- DOWNLOADS SECTION -->
+        <div class="section-title">🚀 Downloads & Projects</div>
+        <div class="links-container">
+            <a href="https://github.com/s07114587-ops/sai-fronend/releases/tag/1.0.0" target="_blank" class="link-btn dl-btn">
+                📱 Download SAI (APK for Phone)
+            </a>
+            <a href="https://sourceforge.net/projects/sai/" target="_blank" class="link-btn dl-btn">
+                💻 Download SAI (EXE for PC)
+            </a>
+            <a href="https://sourceforge.net/projects/s-mario/" target="_blank" class="link-btn dl-btn">
+                🍄 Download S-Mario Game
+            </a>
+            <a href="https://sourceforge.net/projects/s-front-studio/" target="_blank" class="link-btn dl-btn">
+                🛠️ S-Front Studio (Wix Killer)
+            </a>
+            <a href="https://www.producthunt.com/posts/s-front_studio/" target="_blank" class="link-btn dl-btn">
+                😸 View S-Front Studio on Product Hunt
+            </a>
+        </div>
+
+        <!-- SOCIALS & PORTFOLIO SECTION -->
+        <div class="section-title">🌐 Connect & Socials</div>
+        <div class="links-container">
+            <a href="https://whatsapp.com/channel/0029Vb8g3tvGOj9uEIXyhw0b" target="_blank" class="link-btn whatsapp-btn">
+                💬 WhatsApp Channel
+            </a>
+            <a href="https://shubhomoy.dnc.su/" target="_blank" class="link-btn">
+                🌐 Portfolio Website
+            </a>
+            <a href="https://www.behance.net/sgdev1" target="_blank" class="link-btn">
+                🎨 Behance Projects
+            </a>
+            <a href="https://www.deviantart.com/sgdev111" target="_blank" class="link-btn">
+                🖼️ DeviantArt Gallery
+            </a>
+            <a href="https://www.reddit.com/user/sgdev111" target="_blank" class="link-btn">
+                🤖 Reddit Profile
+            </a>
+            <a href="https://dev.to/sgdev_sg_dev" target="_blank" class="link-btn">
+                ✍️ Dev.to Articles
+            </a>
+        </div>
+
+        <footer class="footer">
+            © Shubhomoy | SGDEV Hub PRO
+        </footer>
+    </main>
+
+    <!-- JavaScript Interactive Code -->
+    <script>
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let particles = [];
+        let mouse = { x: null, y: null, active: false };
+        const colors = ['#00ffff', '#ff00ff', '#00ff00', '#ffffff'];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            mouse.active = true;
+            for(let i=0; i<3; i++) {
+                createParticle(mouse.x, mouse.y, true);
+            }
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.active = false;
+        });
+
+        class Particle {
+            constructor(x, y, isTrail) {
+                this.x = x;
+                this.y = y;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                if (isTrail) {
+                    this.size = Math.random() * 6 + 2;
+                    this.speedX = (Math.random() - 0.5) * 2;
+                    this.speedY = (Math.random() - 0.5) * 2;
+                    this.life = 1;
+                    this.decay = Math.random() * 0.03 + 0.03;
+                } else {
+                    this.size = Math.random() * 2.5 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.6;
+                    this.speedY = (Math.random() - 0.5) * 0.6;
+                    this.life = 1;
+                    this.decay = Math.random() * 0.004 + 0.001;
+                }
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life -= this.decay;
+                if (this.size > 0.1) this.size -= 0.02;
+            }
+
+            draw() {
+                ctx.globalAlpha = Math.max(0, this.life);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, Math.max(0, this.size), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+            }
+        }
+
+        function createParticle(x, y, isTrail) {
+            particles.push(new Particle(x, y, isTrail));
+        }
+
+        setInterval(() => {
+            if (particles.length < 180 && mouse.active) {
+                 createParticle(mouse.x + (Math.random()-0.5)*40, mouse.y + (Math.random()-0.5)*40, false);
+            } else if (particles.length < 90) {
+                createParticle(Math.random() * canvas.width, Math.random() * canvas.height, false);
+            }
+        }, 100);
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.shadowBlur = 0;
+
+            // Draw Background Particles First
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                if (particles[i].life <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            
+            // Draw Custom Cursor on TOP
+            if (mouse.active) {
+                ctx.globalAlpha = 1;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.arc(mouse.x, mouse.y, 14, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // Inner Glowing Dot
+                ctx.fillStyle = '#00ffff';
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = '#00ffff';
+                ctx.beginPath();
+                ctx.arc(mouse.x, mouse.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Crosshair accent lines
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(mouse.x - 22, mouse.y); ctx.lineTo(mouse.x - 14, mouse.y);
+                ctx.moveTo(mouse.x + 14, mouse.y); ctx.lineTo(mouse.x + 22, mouse.y);
+                ctx.moveTo(mouse.x, mouse.y - 22); ctx.lineTo(mouse.x, mouse.y - 14);
+                ctx.moveTo(mouse.x, mouse.y + 14); ctx.lineTo(mouse.x, mouse.y + 22);
+                ctx.stroke();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
